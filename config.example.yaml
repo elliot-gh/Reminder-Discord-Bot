@@ -1,0 +1,11 @@
+# Copy this file as "config.yaml", and fill in the values as appropriate.
+# ------------------------------------------------------------------------------
+
+#  ***** For the url, put %s where your username and password go! *****
+# For example: mongodb+srv://%s:%s@example.com/example?example=example
+# agendaCollection is where the jobs are stored.
+mongoDb:
+  url:
+  user:
+  password:
+  agendaCollection: agendaCollection
