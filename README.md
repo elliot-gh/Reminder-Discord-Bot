@@ -8,6 +8,12 @@ A Discord bot built on [discord.js](https://discord.js.org/) that adds a reminde
 2. Copy `config.example.yaml` as `config.yaml` and edit as appropriate.
 3. Run parent
 
+## Commands
+
+- `/reminder create`: Creates a reminder.
+- `/reminder list`: Lists all reminders, allowing deletion.
+- `Apps -> Create reminder`: Creates a reminder on a specific message.
+
 ## License
 
 GNU GPL v3.0

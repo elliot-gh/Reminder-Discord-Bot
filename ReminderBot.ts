@@ -81,14 +81,17 @@ export class ReminderBot implements BotInterface {
             const agendaShutdown = () => {
                 ReminderBot.agenda.stop()
                     .then(() => {
+                        console.error(`agendaShutdown() exitCode: ${process.exitCode}`);
                         process.exit(process.exitCode);
                     })
                     .catch(() => {
+                        console.error(`agendaShutdown() exitCode: ${process.exitCode}`);
                         process.exit(process.exitCode);
                     });
             };
             process.on("SIGTERM", agendaShutdown);
             process.on("SIGINT", agendaShutdown);
+            process.on("SIGHUP", agendaShutdown);
 
             return null;
         } catch (error) {
