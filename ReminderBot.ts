@@ -2,6 +2,8 @@ import { format } from "node:util";
 import { ContextMenuCommandBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction,
     Client, ColorResolvable, CommandInteraction, EmbedBuilder, GatewayIntentBits,
+    InteractionReplyOptions,
+    InteractionUpdateOptions,
     MessageContextMenuCommandInteraction, ModalBuilder, ModalSubmitInteraction, TextInputBuilder,
     TextInputStyle, WebhookEditMessageOptions } from "discord.js";
 import { BotInterface } from "../../BotInterface";
@@ -187,7 +189,7 @@ export class ReminderBot implements BotInterface {
     async handleSlashList(interaction: ChatInputCommandInteraction): Promise<void> {
         console.log(`[ReminderBot] handleSlashList() from: ${interaction.user.id}`);
         const message = await ReminderBot.createReminderList(interaction.user.id, interaction.guildId!, 0);
-        await interaction.reply(message);
+        await interaction.reply(message as InteractionReplyOptions );
     }
 
     async handleContextCreate(interaction: MessageContextMenuCommandInteraction): Promise<void> {
@@ -335,7 +337,8 @@ export class ReminderBot implements BotInterface {
             const embed = new EmbedBuilder()
                 .setTitle("Deleted reminder")
                 .setColor(0x00FF00);
-            await interaction.update(await this.createReminderList(interaction.user.id, interaction.guildId!, currentPos - 1));
+            const updateList = await this.createReminderList(interaction.user.id, interaction.guildId!, currentPos - 1) as InteractionUpdateOptions ;
+            await interaction.update(updateList);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
         } catch (error) {
             if (error instanceof Error) {
@@ -413,7 +416,7 @@ export class ReminderBot implements BotInterface {
         return embed;
     }
 
-    static async createReminderList(userId: string, guildId: string, newPos: number): Promise<WebhookEditMessageOptions> {
+    static async createReminderList(userId: string, guildId: string, newPos: number): Promise<InteractionReplyOptions | InteractionUpdateOptions > {
         const jobs = await this.agenda.jobs(
             { "data.userId": userId, "data.guildId": guildId },
             { nextRunAt: 1 } // sort
