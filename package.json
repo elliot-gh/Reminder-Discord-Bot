@@ -1,16 +1,16 @@
 {
   "name": "reminder-discord-bot",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "repository": "git@github.com:elliot-gh/Reminder-Discord-Bot.git",
   "author": "Elliot",
   "license": "GPL-3.0",
   "private": true,
   "type": "module",
-  "packageManager": "yarn@3.2.1",
+  "packageManager": "yarn@3.3.0",
   "engines": {
-    "node": ">=16.15.0"
+    "node": ">=18.12.0"
   },
   "dependencies": {
-    "agenda": "^4.3.0"
+    "agenda": "^5.0.0"
   }
 }
