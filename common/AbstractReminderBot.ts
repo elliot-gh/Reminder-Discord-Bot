@@ -15,6 +15,7 @@ export abstract class AbstractReminderBot {
     protected abstract readonly BTN_REM_PREV: string;
     protected abstract readonly REMINDER_TYPE: string;
     protected abstract readonly REMINDER_TYPE_TITLE: string;
+    protected abstract readonly REMINDER_TRIGGERED_TITLE: string;
     protected abstract client: Client | null;
     protected abstract agenda: Agenda | null;
 
@@ -37,13 +38,13 @@ export abstract class AbstractReminderBot {
             .setTitle(title)
             .addFields(
                 { name: "Description:", value: data.description, inline: false },
-                { name: "When:", value: `<t:${unixTime}:F>`, inline: false },
+                { name: "Reminder Time:", value: `<t:${unixTime}:F>`, inline: false },
                 { name: "Channel:", value: channel.toString(), inline: false }
             )
             .setColor(color);
 
         if (data.messageUrl !== null) {
-            embed.addFields({ name: "Message:", value: data.messageUrl, inline: false });
+            embed.addFields({ name: "Message Reference:", value: data.messageUrl, inline: false });
         }
 
         return embed;
@@ -93,7 +94,7 @@ export abstract class AbstractReminderBot {
 
         const count = jobs.length;
         if (count === 0) {
-            const embed = this.buildErrorEmbed("Error getting list", `You have no ${this.REMINDER_TYPE}s set.`);
+            const embed = this.buildErrorEmbed("Error Getting Reminder List", `You have no ${this.REMINDER_TYPE}s set.`);
             return { embeds: [embed], components: [], ephemeral: true };
         }
 

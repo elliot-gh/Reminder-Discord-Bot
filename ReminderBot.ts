@@ -31,6 +31,7 @@ export class ReminderBot extends AbstractReminderBot implements BotInterface {
     BTN_REM_DEL_CANCEL_PREFIX = "ReminderBot_btnDeleteCancel__";
     REMINDER_TYPE = "reminder";
     REMINDER_TYPE_TITLE = "Reminder";
+    REMINDER_TRIGGERED_TITLE = "Reminder Triggered";
     client: Client | null = null;
     agenda: Agenda | null = null;
 
@@ -225,7 +226,7 @@ export class ReminderBot extends AbstractReminderBot implements BotInterface {
             ReminderBot.instance.handleReminderJob.bind(ReminderBot.instance);
             const data = job.attrs.data as ReminderJobData;
             const embed = await ReminderBot.instance.buildReminderEmbed(
-                `${ReminderBot.instance.REMINDER_TYPE_TITLE} triggered`, job.attrs.lastRunAt, data, 0xFFFFFF);
+                ReminderBot.instance.REMINDER_TRIGGERED_TITLE, job.attrs.lastRunAt, data, 0xFFFFFF);
             const channel = await ReminderBot.instance.client!.channels.fetch(data.channelId);
             const user = await ReminderBot.instance.client!.users.fetch(data.userId);
             if (channel === null || !channel.isTextBased()) {
