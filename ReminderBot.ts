@@ -75,7 +75,6 @@ export class ReminderBot extends AbstractReminderBot implements BotInterface {
             this.agenda = await createAgenda(config.mongoDb.url, config.mongoDb.user,
                 config.mongoDb.password, config.mongoDb.agendaCollection);
             this.agenda!.define(ReminderBot.AGENDA_JOB_REMINDER, this.handleReminderJob);
-            await this.agenda.start();
             return null;
         } catch (error) {
             const errMsg = `[ReminderBot] Error in init(): ${error}`;
@@ -115,6 +114,7 @@ export class ReminderBot extends AbstractReminderBot implements BotInterface {
     }
 
     async useClient(client: Client): Promise<void> {
+        await this.agenda!.start();
         this.client = client;
         client.on("interactionCreate", async (interaction) => {
             if (interaction.user.id === client.user!.id) {

@@ -3,7 +3,11 @@ import { Agenda } from "agenda";
 
 let initOnce = false; // whether shutdown handlers are setup, only done if createAgenda() is called
 
-const agendaInstances: { [collection: string]: Agenda } = {};
+const agendaInstances: {
+    [url: string]: {
+        [collection: string]: Agenda
+    }
+} = {};
 
 /**
  * Creates an Agenda object, then sets up shutdown handlers. The Agenda object is NOT started.
@@ -15,9 +19,9 @@ const agendaInstances: { [collection: string]: Agenda } = {};
  * @returns A started Agenda object
  */
 export async function createAgenda(url: string, username: string, password: string, collection: string): Promise<Agenda> {
-    if (collection in agendaInstances) {
-        console.log(`[ReminderUtils] found existing agenda for collection name ${collection}`);
-        return agendaInstances[collection];
+    if (agendaInstances[url] !== undefined && agendaInstances[url][collection] !== undefined) {
+        console.log(`[ReminderUtils] found existing agenda for url ${url} with collection name ${collection}`);
+        return agendaInstances[url][collection];
     }
 
     console.log(`[ReminderUtils] creating new agenda for collection name ${collection}`);
@@ -32,7 +36,10 @@ export async function createAgenda(url: string, username: string, password: stri
         }
     });
 
-    agendaInstances[collection] = newAgenda;
+    if (agendaInstances[url] === undefined) {
+        agendaInstances[url] = {};
+    }
+    agendaInstances[url][collection] = newAgenda;
 
     if (!initOnce) {
         initOnce = true;
@@ -47,10 +54,12 @@ export async function createAgenda(url: string, username: string, password: stri
 function handleAgendaShutdown() {
     const shutdownPromises = [];
     console.log("[ReminderUtils] Got shutdown signal, shutting down all Agenda instances");
-    for (const collection in agendaInstances) {
-        console.log(`[ReminderUtils] Shutting down Agenda instance for collection ${collection}`);
-        const agenda = agendaInstances[collection];
-        shutdownPromises.push(agenda.stop());
+    for (const url in agendaInstances) {
+        for (const collection in agendaInstances[url]) {
+            console.log(`[ReminderUtils] Shutting down Agenda instance for url ${url} collection ${collection}`);
+            const agenda = agendaInstances[url][collection];
+            shutdownPromises.push(agenda.stop());
+        }
     }
 
     Promise.allSettled(shutdownPromises)
